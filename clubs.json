@@ -1,22 +1,21 @@
 [
   {
-    "id": "cze-brno-olympia",
+    "id": "cze-brno-zbrojovka",
     "name": "Curling Brno",
     "country": "Czech Republic",
     "city": "Brno",
     "region": "Europe",
     "lat": 49.2104,
     "lng": 16.6147,
-    "venue": { "sheets": 4, "indoor": true, "address": "Nová Zbrojovka, Brno", "opened": 2004 },
+    "venue": { "sheets": 3, "indoor": true, "address": "Lazaretní 9, 615 00 Brno-Židenice", "opened": 2019 },
     "website": "https://www.curlingbrno.cz/",
     "notes": "Dedicated curling arena.",
-    "tournaments": [
-      { "title": "Brno Open", "start": "2025-11-07", "end": "2025-11-09", "url": "https://www.curlingbrno.cz/" },
-      { "title": "Spring Cup", "start": "2025-03-22", "end": "2025-03-23", "notes": "Recreational bonspiel" }
+"tournaments": [
+    { "title": "Spring Cup", "start": "2025-01-22", "end": "2025-01-23", "notes": "Recreational bonspiel" }
     ]
   },
   {
-    "id": "cze-praha-rozcestli",
+    "id": "cze-praha-roztyly",
     "name": "Curling Praha – Roztyly",
     "country": "Czech Republic",
     "city": "Prague",

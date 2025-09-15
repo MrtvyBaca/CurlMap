@@ -2,55 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CurlMap – World Curling Clubs & Bonspiels</title>
-  <!-- Leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <!-- MarkerCluster -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CurlMap</title>
+
+  <!-- Leaflet + MarkerCluster -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
-  <style>
-    :root { --bg:#0b1020; --panel:#11162a; --muted:#8ea0b8; --text:#e7eef9; --accent:#4da3ff; --accent2:#75f0c0; }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0}
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
-    a{color:var(--accent)} a:hover{text-decoration:underline}
-
-    .app{display:grid;grid-template-columns:360px 1fr;grid-template-rows:64px 1fr;grid-template-areas:"header header" "sidebar map";height:100%}
-    header{grid-area:header;display:flex;gap:12px;align-items:center;padding:12px 16px;background:linear-gradient(90deg, rgba(77,163,255,.15), rgba(117,240,192,.15));border-bottom:1px solid rgba(255,255,255,.06)}
-    header h1{font-size:18px;margin:0;font-weight:700;letter-spacing:.2px}
-    header .pill{padding:6px 10px;background:rgba(255,255,255,.06);border-radius:999px;font-size:12px;color:var(--muted)}
-
-    .sidebar{grid-area:sidebar;border-right:1px solid rgba(255,255,255,.06);background:var(--panel);padding:14px;overflow:auto}
-    .field{display:flex;gap:8px;margin-bottom:10px}
-    .field input,.field select{width:100%;border:1px solid rgba(255,255,255,.12);background:#0e1427;color:var(--text);padding:10px 12px;border-radius:10px;outline:none}
-    .field input::placeholder{color:#97a8c2}
-
-    .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
-    .chip{font-size:12px;padding:6px 8px;background:#0e1427;border:1px solid rgba(255,255,255,.12);border-radius:999px;color:var(--muted)}
-
-    .results{display:grid;gap:10px}
-    .card{background:#0e1427;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px}
-    .card h3{margin:0 0 4px;font-size:16px}
-    .meta{color:var(--muted);font-size:12px}
-    .btn-row{display:flex;gap:8px;margin-top:10px}
-    .btn{border:1px solid rgba(255,255,255,.16);background:transparent;color:var(--text);padding:8px 10px;border-radius:10px;cursor:pointer}
-    .btn:hover{border-color:var(--accent)}
-
-    #map{grid-area:map;height:100%;width:100%}
-    .detail{margin-top:10px}
-    .detail h4{margin:16px 0 8px;font-size:14px;color:var(--accent2)}
-    .list{list-style:none;padding:0;margin:0;display:grid;gap:6px}
-    .list li{font-size:14px;color:#cfe0ff}
-    .footer{font-size:12px;color:var(--muted);margin-top:12px}
-    .small{font-size:12px;color:var(--muted)}
-    .leaflet-container{background:#0a0f1f}
-
-    @media (max-width: 900px){ .app{grid-template-columns:1fr;grid-template-rows:64px 45% 55%;grid-template-areas:"header" "map" "sidebar"} }
-  </style>
+  <link rel="stylesheet" href="./style.css"/>
 </head>
 <body>
   <div class="app">
@@ -60,7 +22,7 @@
     </header>
 
     <aside class="sidebar">
-      <div class="field"><input id="search" type="search" placeholder="Search club, city, country… (e.g. Brno, Prague, Zürich)"></div>
+      <div class="field"><input id="search" type="search" placeholder="Search club, city, country…"></div>
       <div class="field">
         <select id="region">
           <option value="">🌍 All regions</option>
@@ -82,112 +44,13 @@
       </div>
       <div class="chips" id="stats"></div>
       <div class="results" id="results"></div>
-      <div class="footer">Tiles © OpenStreetMap contributors. Built with <a href="https://leafletjs.com/" target="_blank" rel="noopener">Leaflet</a>. Host on GitHub Pages/Netlify.</div>
+      <div class="footer">Tiles © OSM contributors • Leaflet</div>
     </aside>
 
     <div id="map"></div>
   </div>
 
-  <script>
-    // ===== MAP INIT =====
-    const map = L.map('map', { zoomControl: true }).setView([30, 10], 2);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OSM contributors' }).addTo(map);
-
-    // Curling stone icon (simple emoji-in-div marker)
-    const CurlingIcon = L.DivIcon.extend({
-      options: {
-        className: 'curling-icon',
-        html: `<div style="width:26px;height:26px;border-radius:50%;background:#1b2a4a;border:2px solid #4da3ff;display:grid;place-items:center;box-shadow:0 0 0 2px rgba(77,163,255,.25)"><span style="font-size:14px">🥌</span></div>`,
-        iconSize: [26, 26], iconAnchor: [13, 13], popupAnchor: [0, -10]
-      }
-    });
-
-    const clusterGroup = L.markerClusterGroup({ chunkedLoading:true, showCoverageOnHover:false, spiderfyOnMaxZoom:true, disableClusteringAtZoom:12 });
-    const markersById = new Map();
-
-    function clubPopupHTML(c){
-      const v=c.venue||{}; const sheets=v.sheets!=null?`${v.sheets} sheets`:'? sheets';
-      const indoor=v.indoor==null?'':(v.indoor?'• indoor':'• outdoor');
-      const addr=v.address?`<div class="small">📍 ${v.address}</div>`:'';
-      const web=c.website?`<a href="${c.website}" target="_blank" rel="noopener">Website</a>`:'';
-      return `<div><strong>${c.name}</strong><br><span class="small">${c.city}, ${c.country}</span>${addr}<div class="small">🧊 ${sheets} ${indoor}</div><div class="btn-row" style="margin-top:6px"><button class="btn" onclick="selectClub('${c.id}')">Details</button>${web?` ${web}`:''}</div></div>`;
-    }
-
-    function addMarkers(data){
-      clusterGroup.clearLayers(); markersById.clear();
-      data.forEach(c=>{ const m=L.marker([c.lat,c.lng],{icon:new CurlingIcon()}).bindPopup(clubPopupHTML(c)); m.on('click',()=>selectClub(c.id)); clusterGroup.addLayer(m); markersById.set(c.id,m); });
-      if(!map.hasLayer(clusterGroup)) map.addLayer(clusterGroup);
-    }
-
-    // ===== UI =====
-    const elSearch=document.getElementById('search');
-    const elRegion=document.getElementById('region');
-    const elIce=document.getElementById('iceFilter');
-    const elResults=document.getElementById('results');
-    const elStats=document.getElementById('stats');
-
-    let CLUBS=[]; // filled after fetch
-
-    function normalize(s){return (s||'').toString().toLowerCase();}
-
-    function filterClubs(){
-      const q=normalize(elSearch.value); const region=elRegion.value; const ice=elIce.value;
-      let filtered=CLUBS.filter(c=>{
-        const hay=`${c.name} ${c.city} ${c.country} ${c.region} ${c.notes||''}`.toLowerCase();
-        const matchQ=!q||hay.includes(q);
-        const matchR=!region||c.region===region;
-        let matchI=true; if(ice){ const count=c.venue?.sheets??0; if(ice.startsWith('>=')){const n=parseInt(ice.replace('>=',''),10); matchI=count>=n;} else if(ice.startsWith('=')){const n=parseInt(ice.replace('=',''),10); matchI=count===n;}}
-        return matchQ&&matchR&&matchI;
-      });
-
-      addMarkers(filtered);
-      if(filtered.length){ const group=new L.featureGroup(filtered.map(c=>L.marker([c.lat,c.lng]))); map.fitBounds(group.getBounds(),{padding:[40,40]}); }
-      renderResults(filtered);
-
-      // stats chips
-      elStats.innerHTML=''; const total=CLUBS.length; const shown=filtered.length; const continents=new Map();
-      filtered.forEach(c=>continents.set(c.region,(continents.get(c.region)||0)+1));
-      [ chip(`${shown}/${total} visible`), ...Array.from(continents.entries()).map(([k,v])=>chip(`${k||'Unknown'}: ${v}`)) ].forEach(ch=>elStats.appendChild(ch));
-    }
-
-    function chip(text){ const s=document.createElement('span'); s.className='chip'; s.textContent=text; return s; }
-
-    function renderResults(list){
-      elResults.innerHTML=''; if(!list.length){ elResults.innerHTML='<div class="small">No clubs match the filters.</div>'; return; }
-      list.sort((a,b)=>a.country.localeCompare(b.country)||a.city.localeCompare(b.city)||a.name.localeCompare(b.name)).forEach(c=>{
-        const card=document.createElement('div'); card.className='card';
-        card.innerHTML=`<h3>${c.name}</h3><div class="meta">${c.city}, ${c.country} • ${c.region||'–'}</div><div class="detail"><strong>Facility:</strong> ${c.venue?.sheets??'?'} sheets ${c.venue?.indoor?'(indoor)':'(outdoor)'} ${c.website?` • <a href="${c.website}" target="_blank" rel="noopener">website</a>`:''}${c.notes?`<div class="small" style="margin-top:6px">${c.notes}</div>`:''}</div><div class="btn-row"><button class="btn" data-id="${c.id}">Show on map</button><button class="btn" data-id="${c.id}" data-action="detail">Tournaments & detail</button></div>`;
-        elResults.appendChild(card);
-      });
-      elResults.querySelectorAll('button').forEach(btn=>{ btn.addEventListener('click',e=>{ const id=e.currentTarget.getAttribute('data-id'); const action=e.currentTarget.getAttribute('data-action'); if(action==='detail') selectClub(id); else focusMarker(id); }); });
-    }
-
-    function focusMarker(id){ const m=markersById.get(id); if(!m) return; const latlng=m.getLatLng(); map.setView(latlng, Math.max(12,map.getZoom())); m.openPopup(); }
-
-    function selectClub(id){ const c=CLUBS.find(x=>x.id===id); if(!c) return; focusMarker(id);
-      const v=c.venue||{}; const tournaments=[...(c.tournaments||[])].sort((a,b)=>new Date(a.start)-new Date(b.start));
-      const today=new Date(); const upcoming=tournaments.filter(t=>new Date(t.end||t.start)>=today); const past=tournaments.filter(t=>new Date(t.end||t.start)<today).reverse();
-      const tItem=t=>`<li>📅 ${fmtDate(t.start)}${t.end?' – '+fmtDate(t.end):''} • <strong>${t.title}</strong>${t.city?' – '+t.city:''}${t.url?` – <a href="${t.url}" target="_blank" rel="noopener">info</a>`:''}${t.notes?` <span class="small">(${t.notes})</span>`:''}</li>`;
-      const html=`<div class="card"><h3>${c.name}</h3><div class="meta">${c.city}, ${c.country} • ${c.region||'–'}</div><div class="detail"><div>🧊 <strong>${v.sheets??'?'} sheets</strong> ${v.indoor?'(indoor)':'(outdoor)'} ${v.opened?`• since ${v.opened}`:''}</div>${v.address?`<div class="small">📍 ${v.address}</div>`:''}${c.website?`<div class="small">🔗 <a href="${c.website}" target="_blank" rel="noopener">${c.website}</a></div>`:''}</div><h4>Upcoming tournaments</h4>${upcoming.length?`<ul class="list">${upcoming.map(tItem).join('')}</ul>`:'<div class="small">No scheduled tournaments.</div>'}<h4>Past tournaments</h4>${past.length?`<ul class="list">${past.map(tItem).join('')}</ul>`:'<div class="small">No history yet.</div>'}<div class="btn-row" style="margin-top:10px"><button class="btn" onclick="copyClubJSON('${c.id}')">Copy club JSON</button><button class="btn" onclick="zoomToRegion('${c.region}')">Zoom to region</button></div></div>`;
-      elResults.innerHTML=html+elResults.innerHTML;
-    }
-
-    function fmtDate(s){ try{ const d=new Date(s); return d.toLocaleDateString('en-GB',{year:'numeric',month:'2-digit',day:'2-digit'});}catch{return s;} }
-
-    function copyClubJSON(id){ const c=CLUBS.find(x=>x.id===id); if(!c) return; const text=JSON.stringify(c,null,2); navigator.clipboard?.writeText(text); alert('Club JSON copied to clipboard.'); }
-
-    function zoomToRegion(region){ if(!region) return; const b={ Europe:[[71,-25],[34,45]], 'North America':[[72,-170],[10,-50]], 'South America':[[15,-82],[-55,-34]], Asia:[[80,25],[0,180]], Africa:[[37,-20],[-35,55]], Oceania:[[0,110],[-48,180]] }[region]; if(b) map.fitBounds(b,{padding:[40,40]}); }
-
-    elSearch.addEventListener('input',filterClubs); elRegion.addEventListener('change',filterClubs); elIce.addEventListener('change',filterClubs);
-
-    // ===== LOAD DATA FROM clubs.json =====
-    fetch('clubs.json', { cache:'no-store' })
-      .then(r=>{ if(!r.ok) throw new Error('Failed to load clubs.json'); return r.json(); })
-      .then(data=>{ CLUBS=data||[]; addMarkers(CLUBS); filterClubs(); })
-      .catch(err=>{ console.error(err); alert('Could not load clubs.json. Make sure the file is in the same folder.'); });
-
-    // ===== DEV TIPS =====
-    console.info(`\nHow to add a club (edit clubs.json):\n- Add an object with id, name, country, city, region, lat, lng.\n- venue: { sheets, indoor, address, opened }\n- tournaments: [ { title, start, end?, url?, notes? } ]\n`);
-  </script>
+  <!-- hlavný modul -->
+  <script type="module" src="./src/main.js"></script>
 </body>
 </html>
