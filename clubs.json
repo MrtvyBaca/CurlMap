@@ -1,0 +1,17 @@
+[
+  {
+    "id": "cze-brno-olympia",
+    "name": "Curling Brno",
+    "country": "Czech Republic",
+    "city": "Brno",
+    "region": "Europe",
+    "lat": 49.2104,
+    "lng": 16.6147,
+    "venue": { "sheets": 4, "indoor": true, "address": "Nová Zbrojovka, Brno", "opened": 2004 },
+    "website": "https://www.curlingbrno.cz/",
+    "notes": "Dedicated curling arena.",
+    "tournaments": [
+      { "title": "Brno Open", "start": "2025-11-07", "end": "2025-11-09" }
+    ]
+  }
+]
