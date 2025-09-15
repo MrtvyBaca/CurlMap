@@ -11,7 +11,22 @@
     "website": "https://www.curlingbrno.cz/",
     "notes": "Dedicated curling arena.",
     "tournaments": [
-      { "title": "Brno Open", "start": "2025-11-07", "end": "2025-11-09" }
+      { "title": "Brno Open", "start": "2025-11-07", "end": "2025-11-09", "url": "https://www.curlingbrno.cz/" },
+      { "title": "Spring Cup", "start": "2025-03-22", "end": "2025-03-23", "notes": "Recreational bonspiel" }
+    ]
+  },
+  {
+    "id": "cze-praha-rozcestli",
+    "name": "Curling Praha – Roztyly",
+    "country": "Czech Republic",
+    "city": "Prague",
+    "region": "Europe",
+    "lat": 50.0305,
+    "lng": 14.4807,
+    "venue": { "sheets": 4, "indoor": true, "address": "Komárkova 12, Praha 4", "opened": 2004 },
+    "website": "https://www.curling.cz/",
+    "tournaments": [
+      { "title": "Prague Classic", "start": "2025-10-24", "end": "2025-10-27", "url": "https://www.worldcurlingtour.org/" }
     ]
   }
 ]
