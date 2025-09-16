@@ -3,21 +3,34 @@
   --accent:#4da3ff; --accent2:#75f0c0;
   --card-bg:#0e1427; --card-fg:var(--text);
   --panel-bg:#131a30; --panel-fg:var(--text);
+  --hdr-h: 64px; /* zjednotená výška headeru */
 }
-:root { --hdr-h: 56px; }
 
-html,body{height:100%;margin:0}
-body{
+html, body { height:100%; margin:0; }
+body {
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   background:var(--bg); color:var(--text);
 }
 
-/* layout */
+/* ===== Layout ===== */
 .app{
-  display:grid; grid-template-columns:360px 1fr; grid-template-rows:64px 1fr;
-  grid-template-areas:"header header" "sidebar map"; height:100%;
+  display:grid;
+  grid-template-columns:360px 1fr;
+  grid-template-rows: var(--hdr-h) 1fr;           /* konzistentné s --hdr-h */
+  grid-template-areas:"header header" "sidebar map";
+  height:100vh;                                   /* fallback */
+  height:100dvh;                                  /* modern mobile */
 }
-.app { height: 100dvh; height: 100vh; }
+header{
+  grid-area:header; display:flex; gap:12px; align-items:center;
+  padding:12px 16px;
+  background:linear-gradient(90deg, rgba(77,163,255,.15), rgba(117,240,192,.15));
+  border-bottom:1px solid rgba(255,255,255,.06);
+  min-height: var(--hdr-h);                       /* nech sedí s gridom */
+}
+header h1{font-size:18px;margin:0;font-weight:700}
+.pill{padding:6px 10px;background:rgba(255,255,255,.06);border-radius:999px;font-size:12px;color:var(--muted)}
+
 /* header button (schovať na desktope) */
 .hdr-btn{
   margin-left:auto;
@@ -26,58 +39,51 @@ body{
   padding:8px 10px; border-radius:10px; cursor:pointer;
 }
 @media (min-width: 901px){ .hdr-btn{ display:none } }
-header{
-  grid-area:header; display:flex; gap:12px; align-items:center;
-  padding:12px 16px;
-  background:linear-gradient(90deg, rgba(77,163,255,.15), rgba(117,240,192,.15));
-  border-bottom:1px solid rgba(255,255,255,.06)
-}
-header h1{font-size:18px;margin:0;font-weight:700}
-.pill{padding:6px 10px;background:rgba(255,255,255,.06);border-radius:999px;font-size:12px;color:var(--muted)}
 
 .sidebar{
   grid-area:sidebar; border-right:1px solid rgba(255,255,255,.06);
-  background:var(--panel); padding:14px; overflow:auto
+  background:var(--panel); padding:14px; overflow:auto;
 }
 
-/* inputs */
+/* ===== Inputs ===== */
 .field{display:flex; gap:8px; margin-bottom:10px}
 .field input,.field select{
   width:100%; border:1px solid rgba(255,255,255,.12);
   background:#0e1427; color:var(--text);
-  padding:10px 12px; border-radius:10px; outline:none
+  padding:10px 12px; border-radius:10px; outline:none;
 }
 
-/* results list */
+/* ===== Results list / cards ===== */
 .results{display:grid; gap:10px}
 .card{
   background:var(--card-bg); color:var(--card-fg);
   border:1px solid rgba(255,255,255,.10);
-  border-radius:14px; padding:12px
+  border-radius:14px; padding:12px;
 }
 .card h3{margin:0 0 4px; font-size:16px; white-space:normal; overflow:visible; text-overflow:clip}
 .meta{color:var(--muted); font-size:12px}
 .btn-row{display:flex; gap:8px; margin-top:10px}
 .btn{
   border:1px solid rgba(255,255,255,.16); background:transparent; color:var(--text);
-  padding:8px 10px; border-radius:10px; cursor:pointer
+  padding:8px 10px; border-radius:10px; cursor:pointer;
 }
 .btn:hover{border-color:var(--accent)}
 
 .card--active{
-  outline:2px solid var(--accent); box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 28%, transparent);
+  outline:2px solid var(--accent);
+  box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 28%, transparent);
 }
 
-/* collapsible detail */
+/* ===== Collapsible detail ===== */
 .panel{
   margin-top:10px; border-radius:10px;
   background:var(--panel-bg); color:var(--panel-fg);
-  border:1px solid rgba(255,255,255,.12)
+  border:1px solid rgba(255,255,255,.12);
 }
 .panel h4{margin:8px 10px 0}
 .panel-body{padding:8px 10px 10px}
 
-/* More/Less */
+/* More/Less (iba pre turnajové popisy) */
 .clamp-3{
   display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3;
   overflow:hidden;
@@ -86,18 +92,22 @@ header h1{font-size:18px;margin:0;font-weight:700}
 .more-title{font-weight:600; margin-bottom:4px}
 .linklike{
   background:none; border:none; padding:0; font:inherit;
-  text-decoration:underline; cursor:pointer; margin-top:4px; color:var(--accent)
+  text-decoration:underline; cursor:pointer; margin-top:4px; color:var(--accent);
 }
 [data-more-wrap].is-expanded [data-more-text]{ -webkit-line-clamp:unset; overflow:visible }
 
-/* map */
-#map{grid-area:map; height:100%; width:100%}
+/* ===== Map ===== */
+#map{
+  grid-area:map; height:100%; width:100%; min-height:0;  /* kľúčové pre grid */
+}
+/* Leaflet kontajner musí vedieť vyrásť na 100% */
+.leaflet-container{ height:100%; min-height:0; }
 
-/* links */
+/* Links */
 a{ color:var(--accent); text-decoration:none }
 a:hover{ text-decoration:none }
 
-/* Leaflet popup – tmavý a čitateľný */
+/* ===== Leaflet popup – tmavý a čitateľný ===== */
 .curlmap-popup .leaflet-popup-content-wrapper{
   background:#171f36; color:var(--text);
   border:1px solid rgba(255,255,255,.15);
@@ -117,24 +127,24 @@ a:hover{ text-decoration:none }
 .popup-table{
   width:100%; border-collapse:collapse; font-size:12px;
   background:#1a2238; color:var(--text);
-  border:1px solid rgba(255,255,255,.15); border-radius:8px; overflow:hidden
+  border:1px solid rgba(255,255,255,.15); border-radius:8px; overflow:hidden;
 }
 .popup-table th,.popup-table td{
-  padding:6px 8px; border-bottom:1px solid rgba(255,255,255,.15); vertical-align:top
+  padding:6px 8px; border-bottom:1px solid rgba(255,255,255,.15); vertical-align:top;
 }
 .popup-table thead th{
   position:sticky; top:0; z-index:1; text-align:left;
-  color:var(--accent); background:rgba(255,255,255,.08)
+  color:var(--accent); background:rgba(255,255,255,.08);
 }
 .popup-table tbody tr:last-child td{ border-bottom:none }
 .popup-links{ margin-top:6px }
 .popup-links a + a::before{ content:" • "; color:var(--muted); margin:0 4px }
 
-/* z-index pre prípad, že popup lezie pod sidebar */
+/* popup nad sidebarom ak by sa krížili */
 .leaflet-popup{ z-index: 5000 }
-/* ===== MOBILE LAYOUT ===== */
+
+/* ===== Mobile layout ===== */
 @media (max-width: 900px){
-  /* z jedného stĺpca: header + celá mapa */
   .app{
     grid-template-columns: 1fr;
     grid-template-rows: var(--hdr-h) 1fr;
@@ -153,7 +163,7 @@ a:hover{ text-decoration:none }
   }
   body.sidebar-open .sidebar{ transform: translateX(0) }
 
-  /* pozadie pod sidebarom */
+  /* overlay pod sidebarom */
   .backdrop{
     position: fixed; inset: var(--hdr-h) 0 0 0;
     background: rgba(0,0,0,.4);

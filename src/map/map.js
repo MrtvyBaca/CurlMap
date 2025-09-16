@@ -8,6 +8,9 @@ const debouncedUpdate = debounce(updateVisibleList, 160);
 
 export function initMap(){
   map = L.map('map', { zoomControl: true }).setView([30,10], 2);
+    // po malom odklade prepočítaj veľkosť (po prvom renderi layoutu)
+  setTimeout(() => map.invalidateSize(), 0);
+  setTimeout(() => map.invalidateSize(), 250);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
   map.on('moveend zoomend', debouncedUpdate);
   window.focusMarker = focusMarker;    // už voláš z UI
@@ -114,4 +117,8 @@ export function fitToFiltered(list){
   if(!list.length) return;
   const grp = new L.featureGroup(list.map(c => L.marker([c.lat, c.lng])));
   map.fitBounds(grp.getBounds(), { padding:[40,40] });
+}
+export function invalidateMap(){
+  if (!map) return;
+  map.invalidateSize();
 }
