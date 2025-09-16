@@ -1,13 +1,17 @@
 import { popupHTML } from "../ui/popup.js";
-import { getState, setFiltered, setSelected } from "../state/store.js";
+import { getState, setFiltered, setSelected, setVisibleIds } from "../state/store.js";
+import { debounce } from '../utils/debounce.js';
 
-let map, clusterGroup;
-const markersById = new Map();
+let clusterGroup;
+let map, markersById = new Map();
+const debouncedUpdate = debounce(updateVisibleList, 160);
 
 export function initMap(){
   map = L.map('map', { zoomControl: true }).setView([30,10], 2);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-
+  map.on('moveend zoomend', debouncedUpdate);
+  window.focusMarker = focusMarker;    // už voláš z UI
+  window.selectClub  = selectClub;     // už voláš z UI
   // curling ikona
   const CurlingIcon = L.DivIcon.extend({
     options: {
@@ -29,38 +33,48 @@ export function initMap(){
   return { addMarkers: (data)=>addMarkers(data, CurlingIcon) };
 }
 
-function addMarkers(data, IconCtor){
-  clusterGroup.clearLayers(); markersById.clear();
+export function addMarkers(clubs, IconCtor){
+  markersById.clear();
+  clubs.forEach(c=>{
+    const m = L.marker([c.lat, c.lng], { icon:new IconCtor() })
+      .bindPopup(popupHTML(c), {
+        minWidth: 420,
+        maxWidth: 800,
+        className: 'curlmap-popup'
+      })
+      .addTo(map)
+      .on('click', ()=> selectClub(c.id));
 
-  data.forEach(c => {
-    const popup = L.popup({
-      minWidth: 420,
-      maxWidth: 800,
-      className: 'curlmap-popup',
-      autoPanPadding: [30, 30],   // voliteľne: nech má miesto pri okrajoch
-    }).setContent(popupHTML(c));
+    // (voliteľné) ulož referenciu na dáta pre neskorší refresh popupu
+    m._club = c;
 
-    const m = L.marker([c.lat, c.lng], { icon: new IconCtor() }).bindPopup(popup);
-
-    m.on('click', () => selectClub(c.id));
-    clusterGroup.addLayer(m);
     markersById.set(c.id, m);
   });
-
-  if (!map.hasLayer(clusterGroup)) map.addLayer(clusterGroup);
+  updateVisibleList(); // prvotné naplnenie
 }
 
+function updateVisibleList(){
+  const b = map.getBounds();
+  const ids = [];
+  getState().clubs.forEach(c=>{
+    if (b.contains([c.lat, c.lng])) ids.push(c.id);
+  });
+  setVisibleIds(ids);
+}
 
 function focusMarker(id){
   const m = markersById.get(id);
   if(!m) return;
-  const ll = m.getLatLng();
-  map.setView(ll, Math.max(12, map.getZoom()));
-  m.openPopup();
+
+  // ak by si menil obsah popupu podľa výberu, môžeš ho refreshnúť:
+  // m.setPopupContent(popupHTML(m._club));
+
+  map.panTo(m.getLatLng(), { animate:true });
+  m.openPopup(); // ↩️ teraz sa otvorí
 }
 
 function selectClub(id){
-  setSelected(id);
+  setSelected(id);        // notifikuje UI cez 'club:selected'
   focusMarker(id);
 }
 

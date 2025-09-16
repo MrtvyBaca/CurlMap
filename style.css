@@ -1,52 +1,124 @@
-:root { --bg:#0b1020; --panel:#11162a; --muted:#8ea0b8; --text:#e7eef9; --accent:#4da3ff; --accent2:#75f0c0; }
-html,body{height:100%;margin:0}
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+:root {
+  --bg:#0b1020; --panel:#11162a; --muted:#8ea0b8; --text:#e7eef9;
+  --accent:#4da3ff; --accent2:#75f0c0;
+  --card-bg:#0e1427; --card-fg:var(--text);
+  --panel-bg:#131a30; --panel-fg:var(--text);
+}
 
-.app{display:grid;grid-template-columns:360px 1fr;grid-template-rows:64px 1fr;grid-template-areas:"header header" "sidebar map";height:100%}
-header{grid-area:header;display:flex;gap:12px;align-items:center;padding:12px 16px;background:linear-gradient(90deg, rgba(77,163,255,.15), rgba(117,240,192,.15));border-bottom:1px solid rgba(255,255,255,.06)}
+html,body{height:100%;margin:0}
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:var(--bg); color:var(--text);
+}
+
+/* layout */
+.app{
+  display:grid; grid-template-columns:360px 1fr; grid-template-rows:64px 1fr;
+  grid-template-areas:"header header" "sidebar map"; height:100%;
+}
+header{
+  grid-area:header; display:flex; gap:12px; align-items:center;
+  padding:12px 16px;
+  background:linear-gradient(90deg, rgba(77,163,255,.15), rgba(117,240,192,.15));
+  border-bottom:1px solid rgba(255,255,255,.06)
+}
 header h1{font-size:18px;margin:0;font-weight:700}
 .pill{padding:6px 10px;background:rgba(255,255,255,.06);border-radius:999px;font-size:12px;color:var(--muted)}
 
-.sidebar{grid-area:sidebar;border-right:1px solid rgba(255,255,255,.06);background:var(--panel);padding:14px;overflow:auto}
-.field{display:flex;gap:8px;margin-bottom:10px}
-.field input,.field select{width:100%;border:1px solid rgba(255,255,255,.12);background:#0e1427;color:var(--text);padding:10px 12px;border-radius:10px;outline:none}
-.results{display:grid;gap:10px}
-.card{background:#0e1427;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px}
-.card h3{margin:0 0 4px;font-size:16px}
-.meta{color:var(--muted);font-size:12px}
-.btn-row{display:flex;gap:8px;margin-top:10px}
-.btn{border:1px solid rgba(255,255,255,.16);background:transparent;color:var(--text);padding:8px 10px;border-radius:10px;cursor:pointer}
+.sidebar{
+  grid-area:sidebar; border-right:1px solid rgba(255,255,255,.06);
+  background:var(--panel); padding:14px; overflow:auto
+}
+
+/* inputs */
+.field{display:flex; gap:8px; margin-bottom:10px}
+.field input,.field select{
+  width:100%; border:1px solid rgba(255,255,255,.12);
+  background:#0e1427; color:var(--text);
+  padding:10px 12px; border-radius:10px; outline:none
+}
+
+/* results list */
+.results{display:grid; gap:10px}
+.card{
+  background:var(--card-bg); color:var(--card-fg);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:14px; padding:12px
+}
+.card h3{margin:0 0 4px; font-size:16px; white-space:normal; overflow:visible; text-overflow:clip}
+.meta{color:var(--muted); font-size:12px}
+.btn-row{display:flex; gap:8px; margin-top:10px}
+.btn{
+  border:1px solid rgba(255,255,255,.16); background:transparent; color:var(--text);
+  padding:8px 10px; border-radius:10px; cursor:pointer
+}
 .btn:hover{border-color:var(--accent)}
-#map{grid-area:map;height:100%;width:100%}
 
-/* odkazy v popupe: modré, bez podčiarknutia */
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: none; }
+.card--active{
+  outline:2px solid var(--accent); box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 28%, transparent);
+}
 
-/* popup */
-.curlmap-popup .leaflet-popup-content { margin:10px 12px; width:100%!important; max-width:100%!important; }
-.popup-links { margin-top:6px }
-.popup-links a + a::before { content:" • "; color:var(--muted); margin:0 4px; }
-.popup-scroll { max-height:260px; overflow:auto; padding-right:4px }
-.popup-table{ width:100%; border-collapse:collapse; font-size:12px; background:#1a2238; color:var(--text); border:1px solid rgba(255,255,255,.15); border-radius:8px; overflow:hidden }
-.popup-table th,.popup-table td{ padding:6px 8px; border-bottom:1px solid rgba(255,255,255,.15); vertical-align:top }
-.popup-table thead th{ position:sticky; top:0; z-index:1; text-align:left; color:var(--accent); background:rgba(255,255,255,.08) }
+/* collapsible detail */
+.panel{
+  margin-top:10px; border-radius:10px;
+  background:var(--panel-bg); color:var(--panel-fg);
+  border:1px solid rgba(255,255,255,.12)
+}
+.panel h4{margin:8px 10px 0}
+.panel-body{padding:8px 10px 10px}
+
+/* More/Less */
+.clamp-3{
+  display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3;
+  overflow:hidden;
+}
+.more-block{margin-top:8px}
+.more-title{font-weight:600; margin-bottom:4px}
+.linklike{
+  background:none; border:none; padding:0; font:inherit;
+  text-decoration:underline; cursor:pointer; margin-top:4px; color:var(--accent)
+}
+[data-more-wrap].is-expanded [data-more-text]{ -webkit-line-clamp:unset; overflow:visible }
+
+/* map */
+#map{grid-area:map; height:100%; width:100%}
+
+/* links */
+a{ color:var(--accent); text-decoration:none }
+a:hover{ text-decoration:none }
+
+/* Leaflet popup – tmavý a čitateľný */
+.curlmap-popup .leaflet-popup-content-wrapper{
+  background:#171f36; color:var(--text);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:12px;
+  min-width:420px !important; max-width:800px !important;
+}
+.curlmap-popup .leaflet-popup-tip{
+  background:#171f36; border:1px solid rgba(255,255,255,.15);
+  width:16px; height:16px;
+}
+.curlmap-popup .leaflet-popup-content{
+  margin:10px 12px; width:auto !important; max-width:100% !important;
+}
+
+/* optional: popup scrollable sections + table theme */
+.popup-scroll{ max-height:260px; overflow:auto; padding-right:4px }
+.popup-table{
+  width:100%; border-collapse:collapse; font-size:12px;
+  background:#1a2238; color:var(--text);
+  border:1px solid rgba(255,255,255,.15); border-radius:8px; overflow:hidden
+}
+.popup-table th,.popup-table td{
+  padding:6px 8px; border-bottom:1px solid rgba(255,255,255,.15); vertical-align:top
+}
+.popup-table thead th{
+  position:sticky; top:0; z-index:1; text-align:left;
+  color:var(--accent); background:rgba(255,255,255,.08)
+}
 .popup-table tbody tr:last-child td{ border-bottom:none }
-/* priamo obal popupu */
-.curlmap-popup .leaflet-popup-content-wrapper {
-  min-width: 420px !important;   /* nastav, koľko chceš */
-  max-width: 800px !important;   /* horný limit */
-}
+.popup-links{ margin-top:6px }
+.popup-links a + a::before{ content:" • "; color:var(--muted); margin:0 4px }
 
-/* vnútorný obsah – nech sa vie rozťahovať */
-.curlmap-popup .leaflet-popup-content {
-  width: auto !important;
-  max-width: 100% !important;
-  margin: 10px 12px;  /* padding dovnútra */
-}
-
-/* voliteľne trochu širšia „špička“/pozadie */
-.curlmap-popup .leaflet-popup-tip {
-  width: 16px;
-  height: 16px;
-}
+/* z-index pre prípad, že popup lezie pod sidebar */
+.leaflet-popup{ z-index: 5000 }

@@ -17,7 +17,7 @@ export function popupHTML(c){
       <div class="small">🧊 ${sheets} ${indoor}</div>
 
       <div class="popup-links">
-        <a href="javascript:void(0)" onclick="toggleClubPopup('${c.id}')">Details</a>
+        <a href="javascript:void(0)" onclick="toggleClubPopup('${c.id}')">Events</a>
         ${websiteLink}
       </div>
 
@@ -28,7 +28,6 @@ export function popupHTML(c){
 
         <div class="popup-links" style="margin-top:8px">
           <a href="javascript:void(0)" onclick="addTournament('${c.id}')">Add tournament</a>
-          <a href="javascript:void(0)" onclick="copyClubJSON('${c.id}')">Copy club JSON</a>
         </div>
       </div>
     </div>
@@ -69,7 +68,7 @@ function rowHTML(t){
   const titleCell = t.url
     ? `<a href="${t.url}" target="_blank" rel="noopener">${makeTruncateSpan(t.title, TRUNCATE_N)}</a>`
     : makeTruncateSpan(t.title, TRUNCATE_N);
-  const notesCell = t.notes ? makeTruncateSpan(t.notes, 24) : '<span class="small">—</span>';
+  const notesCell = t.notes ? makeTruncateSpan(t.notes, 50) : '<span class="small">—</span>';
   const city = t.city ? ' – ' + makeTruncateSpan(t.city, 16) : '';
 
   return `

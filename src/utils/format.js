@@ -13,7 +13,7 @@ export function splitTournaments(c){
   return { upcoming, past };
 }
 
-export const TRUNCATE_N = 20;
+export const TRUNCATE_N = 50;
 
 export function makeTruncateSpan(text, n = TRUNCATE_N){
   const t = (text||'').toString();
