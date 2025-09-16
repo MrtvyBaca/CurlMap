@@ -2,7 +2,8 @@ import { subscribe, getState, setClubs, setFiltered, setFilters } from "./state/
 import { loadClubs } from "./data/clubsService.js";
 import { initMap, fitToFiltered } from "./map/map.js";
 import { initSidebar } from "./ui/sidebar.js";
-
+import { initScrollNav } from './ui/scrollNav.js';
+initScrollNav();
 const mapApi = initMap();
 
 // POSIELAME CALLBACK do sidebaru:

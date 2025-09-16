@@ -181,3 +181,142 @@ a:hover{ text-decoration:none }
 
 /* väčšie tap hit-areas pre Leaflet zoom (dobrovoľné) */
 .leaflet-control-zoom a{ width:36px; height:36px; line-height:36px; }
+
+/* ===== View switch (segmented control) ===== */
+.view-switch {
+  margin-left:auto; display:flex; gap:6px;
+  padding:4px; border:1px solid rgba(255,255,255,.14);
+  border-radius:999px; background:rgba(255,255,255,.06);
+}
+.vs-btn{
+  border:0; background:transparent; color:var(--text);
+  padding:6px 12px; border-radius:999px; cursor:pointer; font-weight:600;
+  opacity:.8;
+}
+.vs-btn.is-active{ background:rgba(77,163,255,.22); opacity:1 }
+.vs-desktop{ display:none }
+
+@media (min-width: 901px){
+  .vs-desktop{ display:inline-flex }
+}
+
+/* ===== Base grid pre všetky režimy ===== */
+.app{
+  display:grid;
+  grid-template-columns: 360px 1fr;
+  grid-template-rows: var(--hdr-h) 1fr;
+  grid-template-areas:
+    "header header"
+    "feed   map";
+  height:100vh; height:100dvh;
+}
+
+/* default (desktop split) – keď je body.view-split alebo veľký displej bez výberu */
+body.view-split .app { /* nechaj default grid */ }
+
+/* FEED režim – feed cez celú šírku, mapa schovať */
+body.view-feed .app{
+  grid-template-columns: 1fr;
+  grid-template-rows: var(--hdr-h) 1fr;
+  grid-template-areas:
+    "header"
+    "feed";
+}
+body.view-feed #map{ display:none }
+
+/* MAP režim – mapa cez celú šírku, feed schovať */
+body.view-map .app{
+  grid-template-columns: 1fr;
+  grid-template-rows: var(--hdr-h) 1fr;
+  grid-template-areas:
+    "header"
+    "map";
+}
+body.view-map .feed{ display:none }
+
+/* area priradenia */
+header{ grid-area:header }
+.feed{
+  grid-area:feed; border-right:1px solid rgba(255,255,255,.06);
+  background:var(--panel); padding:14px; overflow:auto;
+}
+#map{ grid-area:map; height:100%; width:100%; min-height:0 }
+
+/* Mobile: default zobraz FEED, Split tlačidlo skryté */
+@media (max-width: 900px){
+  body:not(.view-map):not(.view-split) { /* fallback na feed */
+    /* ak nič nevybrané, preferuj feed */
+  }
+  .app{
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--hdr-h) 1fr;
+    grid-template-areas: "header" "feed";
+  }
+  .vs-desktop{ display:none }
+}
+
+/* (ponechaj svoje existujúce Leaflet popup + karty + inputs štýly) */
+/* ===== Stacked layout: mapa hore (100vh/100dvh), feed pod ňou ===== */
+.app.stacked{
+  display:block;
+  height:auto; /* už žiadny fixný 100vh grid */
+}
+
+#mapSection{
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;  /* lepšie na mobiloch */
+}
+#map{
+  position: absolute;
+  inset: 0;         /* natiahni na celý #mapSection */
+  width: auto;
+  height: auto;
+  min-height: 0;
+  /* pre istotu zruš grid area, ak by niečo staré prebíjalo */
+  grid-area: auto;
+}
+
+/* tlačidlo na preskočenie do feedu – pláva nad mapou */
+.jump-btn{
+  position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
+  border:1px solid rgba(255,255,255,.2);
+  background: rgba(0,0,0,.35);
+  color: var(--text);
+  padding:10px 14px; border-radius:999px; cursor:pointer;
+  backdrop-filter: blur(6px);
+}
+.jump-btn:hover{ border-color: var(--accent); }
+
+/* feed sekcia pod mapou */
+.feed{
+  background: var(--panel);
+  padding: 14px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  overflow: visible; /* nech sa nič nereže */
+}
+
+/* voliteľné: header pevne hore pri skrolle (príjemný dojem appky) */
+header{
+  position: sticky; top: 0; z-index: 3000;
+  backdrop-filter: blur(6px);
+}
+
+/* navigačné tlačidlo vo feede */
+.feed-nav{
+  display:flex; justify-content:center; margin: 16px 0 8px;
+}
+.back-btn{
+  border:1px solid rgba(255,255,255,.2);
+  background: transparent; color: var(--text);
+  padding:8px 12px; border-radius:999px; cursor:pointer;
+}
+.back-btn:hover{ border-color: var(--accent); }
+
+/* na malých šírkach nech popup nepýta 420px min-width */
+@media (max-width: 900px){
+  .curlmap-popup .leaflet-popup-content-wrapper{
+    min-width: auto !important;
+    max-width: 92vw !important;
+  }
+}

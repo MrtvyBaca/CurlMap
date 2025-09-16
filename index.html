@@ -15,15 +15,24 @@
   <link rel="stylesheet" href="./style.css"/>
 </head>
 <body>
-  <div class="app">
+  <div class="app stacked">
     <header>
       <h1>CurlMap</h1>
-      <span class="pill">World curling clubs & bonspiels • Free</span>
-      <button id="btnSidebar" class="hdr-btn">Filters</button>
+      <span class="pill">World curling clubs &amp; bonspiels • Free</span>
     </header>
 
-    <aside class="sidebar">
-      <div class="field"><input id="search" type="search" placeholder="Search club, city, country…"></div>
+    <!-- MAP SECTION (full viewport height) -->
+    <section id="mapSection">
+      <div id="map"></div>
+      <!-- anchor works even without JS; keep id for optional JS smooth scroll -->
+      <a href="#feed" id="jumpToFeed" class="jump-btn">Zobraziť zoznam ↓</a>
+    </section>
+
+    <!-- FEED SECTION (filters + stats + results) -->
+    <section class="feed" id="feed" aria-label="Feed">
+      <div class="field">
+        <input id="search" type="search" placeholder="Search club, city, country…">
+      </div>
       <div class="field">
         <select id="region">
           <option value="">🌍 All regions</option>
@@ -43,12 +52,17 @@
           <option value="=1">= 1 sheet</option>
         </select>
       </div>
+
       <div class="chips" id="stats"></div>
       <div class="results" id="results"></div>
+
+      <div class="feed-nav">
+        <!-- anchor back to map top; keep id for optional JS smooth scroll -->
+        <a href="#mapSection" id="backToMap" class="back-btn">↑ Naspäť na mapu</a>
+      </div>
+
       <div class="footer">Tiles © OSM contributors • Leaflet</div>
-    </aside>
-    <div id="sidebarOverlay" class="backdrop"></div>
-    <div id="map"></div>
+    </section>
   </div>
 
   <!-- hlavný modul -->
