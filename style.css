@@ -4,6 +4,7 @@
   --card-bg:#0e1427; --card-fg:var(--text);
   --panel-bg:#131a30; --panel-fg:var(--text);
 }
+:root { --hdr-h: 56px; }
 
 html,body{height:100%;margin:0}
 body{
@@ -16,6 +17,15 @@ body{
   display:grid; grid-template-columns:360px 1fr; grid-template-rows:64px 1fr;
   grid-template-areas:"header header" "sidebar map"; height:100%;
 }
+.app { height: 100dvh; height: 100vh; }
+/* header button (schovať na desktope) */
+.hdr-btn{
+  margin-left:auto;
+  border:1px solid rgba(255,255,255,.16);
+  background:transparent; color:var(--text);
+  padding:8px 10px; border-radius:10px; cursor:pointer;
+}
+@media (min-width: 901px){ .hdr-btn{ display:none } }
 header{
   grid-area:header; display:flex; gap:12px; align-items:center;
   padding:12px 16px;
@@ -122,3 +132,42 @@ a:hover{ text-decoration:none }
 
 /* z-index pre prípad, že popup lezie pod sidebar */
 .leaflet-popup{ z-index: 5000 }
+/* ===== MOBILE LAYOUT ===== */
+@media (max-width: 900px){
+  /* z jedného stĺpca: header + celá mapa */
+  .app{
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--hdr-h) 1fr;
+    grid-template-areas: "header" "map";
+  }
+
+  /* off-canvas sidebar */
+  .sidebar{
+    position: fixed; top: var(--hdr-h); left: 0; bottom: 0;
+    width: min(92vw, 420px);
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    z-index: 4000;
+    box-shadow: 8px 0 24px rgba(0,0,0,.4);
+    overflow: auto;
+  }
+  body.sidebar-open .sidebar{ transform: translateX(0) }
+
+  /* pozadie pod sidebarom */
+  .backdrop{
+    position: fixed; inset: var(--hdr-h) 0 0 0;
+    background: rgba(0,0,0,.4);
+    opacity: 0; pointer-events: none;
+    transition: opacity .2s; z-index: 3500;
+  }
+  body.sidebar-open .backdrop{ opacity:1; pointer-events:auto }
+
+  /* popup na mobile nesmie mať fixné min-width 420px */
+  .curlmap-popup .leaflet-popup-content-wrapper{
+    min-width: auto !important;
+    max-width: 92vw !important;
+  }
+}
+
+/* väčšie tap hit-areas pre Leaflet zoom (dobrovoľné) */
+.leaflet-control-zoom a{ width:36px; height:36px; line-height:36px; }

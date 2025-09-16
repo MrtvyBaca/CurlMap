@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CurlMap</title>
 
   <!-- Leaflet + MarkerCluster -->
@@ -19,6 +19,7 @@
     <header>
       <h1>CurlMap</h1>
       <span class="pill">World curling clubs & bonspiels • Free</span>
+      <button id="btnSidebar" class="hdr-btn">Filters</button>
     </header>
 
     <aside class="sidebar">
@@ -46,7 +47,7 @@
       <div class="results" id="results"></div>
       <div class="footer">Tiles © OSM contributors • Leaflet</div>
     </aside>
-
+    <div id="sidebarOverlay" class="backdrop"></div>
     <div id="map"></div>
   </div>
 
